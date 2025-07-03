@@ -110,4 +110,29 @@ public final class SignalBus implements Cloneable {
         }
         return signalBus;
     }
+
+    public static SignalBus fromInt(int value, int bitWidth) {
+        boolean[] bits = new boolean[bitWidth];
+        for (int i = 0; i < bitWidth; i++) {
+            bits[i] = ((value >> i) & 1) == 1; // LSB at index 0
+        }
+        return new SignalBus(bits);
+    }
+
+    public static SignalBus fromSignedInt(int value, int bitWidth) {
+        int wrapped = value & ((1 << bitWidth) - 1);
+        return fromInt(wrapped, bitWidth);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        SignalBus other = (SignalBus) obj;
+        if (this.size() != other.size()) return false;
+        for (int i = 0; i < signals.length; i++) {
+            if (!this.get(i).equals(other.get(i))) return false;
+        }
+        return true;
+    }
 }
